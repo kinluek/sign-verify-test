@@ -193,8 +193,8 @@ contract VerifySignature {
         uint256 id,
         address owner,
         bytes memory _signature
-    ) public pure returns (address signer) {
-        string memory message = string(abi.encodePacked(Strings.toString(id), "-", Strings.toHexString(owner)));
+    ) public pure returns (bool) {
+        string memory message = string(abi.encodePacked(Strings.toString(id)));
 
         (bytes32 r, bytes32 s, uint8 v) = splitSignature(_signature);
         string memory header = "\x19Ethereum Signed Message:\n000000";
@@ -233,6 +233,7 @@ contract VerifySignature {
             mstore(header, lengthLength)
         }
         bytes32 check = keccak256(abi.encodePacked(header, message));
-        return ecrecover(check, v, r, s);
+        require(owner == ecrecover(check, v, r, s), "Invalid Signature");
+        return true;
     }
 }

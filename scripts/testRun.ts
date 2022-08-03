@@ -8,17 +8,17 @@ async function main() {
     
     console.log("SIGNER ADDRESS: ", signer.address)
 
-    const id = 2
+    const tokenId = 2
 
+    const message = `${tokenId}`
 
-
-    const message = `${id}-${signer.address}`
-
-    console.log(`id: ${id}`)
+    console.log(`id: ${tokenId}`)
     console.log(`signer address: ${signer.address}`)
     console.log("message to sign: ", message)
 
     const signature = await signer.signMessage(message)
+
+    console.log(`QR CODE DATA: ${tokenId}-${signer.address}-${signature}`)
 
 
 
@@ -26,17 +26,10 @@ async function main() {
     const contract = await contractFactory.deploy()
     await contract.deployed()
 
-    const result1 = await contract.verifyString(message, signature)
+    const result = await contract.verifyTicket(tokenId, signer.address, signature)
 
-    console.log("RESULT ADDRESS 1: ", result1)
+    console.log("RESULT: ", result)
 
-    const result2 = await contract.verifyTicket(id, signer.address, signature)
-
-    console.log("RESULT ADDRESS 2: ", result2)
-
-    const equal = await contract.compare(`${id}-${signer.address}`, id, signer.address)
-
-    console.log("EQUAL: ", equal)
 
 
 }
